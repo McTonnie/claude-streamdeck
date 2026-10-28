@@ -102,3 +102,54 @@ export function muteImage(muted: boolean, quietNow: boolean): string {
 			`</svg>`,
 	);
 }
+
+/** Breaks text into at most `lines` lines of about `width` characters, the last one cut with an ellipsis. */
+function wrap(text: string, width: number, lines: number): string[] {
+	const out: string[] = [];
+	let line = "";
+	for (const word of text.split(/\s+/).filter(Boolean)) {
+		const next = line ? `${line} ${word}` : word;
+		if (next.length <= width) {
+			line = next;
+			continue;
+		}
+		if (line) out.push(line);
+		line = word.length > width ? cut(word, width) : word;
+	}
+	if (line) out.push(line);
+	if (out.length > lines) {
+		const kept = out.slice(0, lines);
+		kept[lines - 1] = cut(`${kept[lines - 1]} ${out[lines]}`, width);
+		return kept;
+	}
+	return out;
+}
+
+export type ShortcutFace = {
+	/** The key's text: the user's own label, else the session's title; null before a session is picked. */
+	label: string | null;
+	/** Status text and colour while the session is busy; null when idle. */
+	status: { text: string; color: string } | null;
+	/** Dim half of a blink (needs answer only). */
+	dim: boolean;
+};
+
+/** A Session shortcut key: its label, and a coloured status band along the bottom while the session is busy. */
+export function shortcutImage(f: ShortcutFace): string {
+	const parts = [`<rect width="144" height="144" fill="${COLORS.idle}"/>`];
+	if (!f.label) {
+		parts.push(`<text x="72" y="66" text-anchor="middle" font-family="${FONT}" font-size="19" fill="${COLORS.muted}">Pick a</text>`);
+		parts.push(`<text x="72" y="90" text-anchor="middle" font-family="${FONT}" font-size="19" fill="${COLORS.muted}">session</text>`);
+	} else {
+		const lines = wrap(f.label, 11, 3);
+		const top = (f.status ? 60 : 76) - (lines.length - 1) * 13;
+		lines.forEach((l, i) =>
+			parts.push(`<text x="72" y="${top + i * 26}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="21" fill="${COLORS.text}">${esc(l)}</text>`),
+		);
+	}
+	if (f.status) {
+		parts.push(`<rect y="106" width="144" height="38" fill="${f.status.color}" opacity="${f.dim ? 0.35 : 1}"/>`);
+		parts.push(`<text x="72" y="132" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="18" fill="${COLORS.bg}">${esc(f.status.text)}</text>`);
+	}
+	return svgUrl(`<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 144 144">${parts.join("")}</svg>`);
+}

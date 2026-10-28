@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Claude Notify session shortcut</title>
+		<script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
+	</head>
+	<body>
+		<sdpi-item label="Session">
+			<sdpi-select setting="sessionId" datasource="getSessions" hot-reload loading="Loading sessions…" placeholder="Pick a session"></sdpi-select>
+		</sdpi-item>
+		<sdpi-item label="Label">
+			<sdpi-textfield setting="label" placeholder="The session's title"></sdpi-textfield>
+		</sdpi-item>
+		<sdpi-item label="Chime">
+			<sdpi-checkbox setting="sound" default="false" label="When this session needs me or finishes"></sdpi-checkbox>
+		</sdpi-item>
+		<p style="color:#9aa0ab;font-size:11px;margin:8px 12px">Press opens the session. The band along the bottom shows Working, Asking you or Finished while it's busy. The chime plays only when no Needs, Finished, Combined key or Session browser dial is on screen (those already chime for every session).</p>
+	</body>
+</html>

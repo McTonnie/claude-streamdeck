@@ -3,16 +3,16 @@ import path from "node:path";
 
 import { openSession } from "./open";
 import { type Chime, play, soundFile, warmUp } from "./sound/player";
-import { desktopInfo } from "./store/desktop";
+import { desktopInfo, desktopSessions } from "./store/desktop";
 import { loadMemory, memory, saveMemory, silenced } from "./store/memory";
 import { readStates, watchStates } from "./store/states";
-import type { BusyItem, ComboSettings, Item, Kind, KeySettings, SessionState } from "./types";
+import type { BusyItem, ComboSettings, Item, Kind, KeySettings, SessionState, ShortcutSettings } from "./types";
 
 // The plugin's one source of truth: the waiting sessions in two queues, which
 // keys are on screen with which settings, the blink phase, presses, and the
 // sounds. Actions draw from it and tell it what was pressed.
 
-export type ActionType = "needs" | "finished" | "combined" | "mute" | "browser" | "status";
+export type ActionType = "needs" | "finished" | "combined" | "mute" | "browser" | "status" | "shortcut";
 type Visible = { type: ActionType; settings: Record<string, unknown> };
 
 const BLINK_MS = 500;
@@ -45,13 +45,15 @@ function toBusy(s: SessionState): BusyItem | null {
 
 /** The waiting item (needs answer or finished) a busy session stands for. */
 const toItem = (b: BusyItem): Item | null =>
-	b.status === "working" ? null : { id: b.id, kind: b.status, needsKind: b.needsKind, since: b.since, title: b.title };
+	b.status === "working" || b.status === "idle" ? null : { id: b.id, kind: b.status, needsKind: b.needsKind, since: b.since, title: b.title };
 
 class Hub {
 	needs: Item[] = [];
 	finished: Item[] = [];
 	/** Every busy session (working, needs answer, finished and not seen), most recent change first. */
 	busy: BusyItem[] = [];
+	/** Every session of the Desktop app (not archived): the busy ones as above, the rest idle; most recent first. */
+	all: BusyItem[] = [];
 	/** Bright or dim half of the blink. */
 	bright = true;
 
@@ -97,6 +99,15 @@ class Hub {
 			.map(toBusy)
 			.filter((b): b is BusyItem => b !== null)
 			.sort((a, b) => b.since - a.since);
+		const busyIds = new Map(this.busy.map((b) => [b.id, b]));
+		this.all = desktopSessions()
+			.map((d): BusyItem => {
+				const folder = path.basename(d.cwd);
+				return busyIds.get(d.id) ?? { id: d.id, status: "idle", needsKind: null, since: d.lastActivityAt, title: d.title || folder || "Claude", folder };
+			})
+			.sort((a, b) => b.since - a.since);
+		// The Desktop folder can't be read: the busy sessions are all there is to show.
+		if (this.all.length === 0) this.all = this.busy;
 		const items = this.busy.map(toItem).filter((i): i is Item => i !== null);
 		const bySince = (a: Item, b: Item) => a.since - b.since;
 		this.needs = items.filter((i) => i.kind === "needs").sort(bySince);
@@ -105,8 +116,10 @@ class Hub {
 		const keys = new Set(items.map((i) => `${i.id}|${i.kind}|${i.since}`));
 		if (this.started) {
 			const arrived = items.filter((i) => !this.known.has(`${i.id}|${i.kind}|${i.since}`));
-			if (arrived.some((i) => i.kind === "needs")) this.chime("needs", false);
-			if (arrived.some((i) => i.kind === "finished")) this.chime("finished", false);
+			for (const kind of ["needs", "finished"] as const) {
+				const ids = arrived.filter((i) => i.kind === kind).map((i) => i.id);
+				if (ids.length > 0) this.chime(kind, false, ids);
+			}
 		}
 		this.known = keys;
 
@@ -216,12 +229,27 @@ class Hub {
 		return { file: soundFile(choice, custom, kind), volume: Number(s.volume ?? 70) };
 	}
 
-	/** One chime per event, whichever keys show it. */
-	private chime(kind: Kind, reminder: boolean): void {
+	/** What a session shows now: its busy item, or idle. */
+	statusOf(id: string): BusyItem | null {
+		return this.all.find((b) => b.id === id) ?? this.busy.find((b) => b.id === id) ?? null;
+	}
+
+	/**
+	 * One chime per event, whichever keys show it. With no Needs, Finished,
+	 * Combined or dial on screen, a Session shortcut key whose chime is on still
+	 * plays it for its own session.
+	 */
+	private chime(kind: Kind, reminder: boolean, ids: string[] = []): void {
 		this.lastChime[kind] = Date.now();
 		if (silenced()) return;
 		const v = this.source(kind);
-		if (!v) return;
+		if (!v) {
+			const own = [...this.visible.values()].some(
+				(s) => s.type === "shortcut" && (s.settings as ShortcutSettings).sound === true && ids.includes(String((s.settings as ShortcutSettings).sessionId)),
+			);
+			if (own && !reminder) play(soundFile(kind, undefined, kind), 70);
+			return;
+		}
 		const main = this.sound(kind, v);
 		const s = v.settings as KeySettings & ComboSettings;
 		const file = reminder && s.reminderSound !== "main" ? soundFile("reminder", undefined, "reminder" as Chime) : main.file;

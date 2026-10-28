@@ -16,9 +16,10 @@ It comes in two parts that work together:
 - **Needs answer** key (amber `?`): blinks while any session waits for you: a permission prompt, a question, a plan to approve, or a next-step question.
 - **Finished** key (green ✓): blinks when a session has finished and nothing is left running in the background.
 - **Combined** key: both in one, split diagonally. The amber half is for needs answer, the green half for finished.
+- **Session shortcut** key: opens one session you pick (a master session, say). It shows the session's title, or your own label, and a coloured band while that session is *Working*, *Asking you* or *Finished*. Optional chime for that session.
 - **Mute** key: silences all sounds (keys keep blinking). Optional quiet hours.
 - **Session browser** dial (Stream Deck +): turn through every waiting session on the touch strip, showing title, kind and age.
-- **Session status** dial (Stream Deck +): see what every busy session is doing (blue *Working*, amber *Needs approval* / *Asking you*, green *Finished*), with its project folder and how long it's been in that state. The most recent change comes first; turn to switch.
+- **Session status** dial (Stream Deck +): see what every busy session is doing (blue *Working*, amber *Needs approval* / *Asking you*, green *Finished*), with its project folder and how long it's been in that state. The most recent change comes first; turn to switch. Turn on **Show all sessions** in its settings to step through every session in the Claude app, idle ones too (grey).
 
 Every waiting key shows a **count badge** and the **title of the session** the next press opens. Each kind plays its own **chime** once when something new arrives, with optional reminders.
 
@@ -36,7 +37,7 @@ Every waiting key shows a **count badge** and the **title of the session** the n
 
 | On the Session status dial | What happens |
 | --- | --- |
-| Turn | Switch between busy sessions (working, needs answer, finished and not yet seen). |
+| Turn | Switch between busy sessions (working, needs answer, finished and not yet seen), or between all sessions with *Show all sessions* on. |
 | Press or tap | Open the one shown. A finished one then counts as seen. |
 
 ## Requirements
@@ -95,7 +96,7 @@ claude plugin install mctonnie-mods@mctonnie
 
 **3. Start a new Claude Desktop session.** The mod loads when a session starts; sessions that were already open stay untracked until restarted.
 
-**4. Set up your deck.** In the Stream Deck app, find the **Claude Notify** category and drag *Needs answer*, *Finished*, *Combined*, *Mute*, *Session browser* and *Session status* (dials) where you want them.
+**4. Set up your deck.** In the Stream Deck app, find the **Claude Notify** category and drag *Needs answer*, *Finished*, *Combined*, *Session shortcut*, *Mute*, *Session browser* and *Session status* (dials) where you want them. For a Session shortcut, pick the session in its settings.
 
 To test, ask the new session something that needs your approval: the Needs answer key should blink and chime.
 
@@ -114,6 +115,16 @@ To test, ask the new session something that needs your approval: the Needs answe
 Combined and the dial have a separate sound for each kind.
 
 When several keys show the same event, it plays **one** sound. The settings come from the Needs answer or Finished key if one is on screen, otherwise from Combined, otherwise from the dial.
+
+**Session shortcut key:**
+
+| Setting | Default | Meaning |
+| --- | --- | --- |
+| Session | none | The session it opens, picked from your Claude app sessions (not archived), most recent first |
+| Label | the session's title | Your own text for the key, e.g. `Master` |
+| Chime | off | Plays the needs / finished chime for this session. It only plays when no Needs answer, Finished, Combined key or Session browser dial is on screen, because those already chime for every session. |
+
+**Session status dial:** *Show all sessions* (off by default) lists every session in the Claude app, idle ones too, instead of only the busy ones.
 
 **Mute key:** press to toggle. In its settings, **Quiet hours** (off by default) silences sounds every day between two times, for example 23:00 to 08:00. The key shows `MUTED` or `QUIET` while sounds are off.
 

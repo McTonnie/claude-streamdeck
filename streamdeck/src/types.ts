@@ -27,10 +27,10 @@ export type Item = {
 	title: string;
 };
 
-/** One busy session, as the status dial shows it: working, needs answer, or finished and not seen. */
+/** One session as the status dial and shortcut keys show it: working, needs answer, finished and not seen, or idle. */
 export type BusyItem = {
 	id: string;
-	status: "working" | Kind;
+	status: "idle" | "working" | Kind;
 	needsKind: NeedsKind | null;
 	since: number;
 	title: string;
@@ -58,6 +58,13 @@ export type ComboSettings = {
 	reminder?: string;
 	reminderSound?: string;
 	showTitle?: boolean;
+};
+
+/** Settings of a Session shortcut key. */
+export type ShortcutSettings = {
+	sessionId?: string;
+	label?: string;
+	sound?: boolean;
 };
 
 export type MuteSettings = {

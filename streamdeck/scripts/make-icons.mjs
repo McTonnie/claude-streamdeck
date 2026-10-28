@@ -33,12 +33,17 @@ const FILES = {
 		144,
 		`<rect width="144" height="144" fill="${IDLE}"/><rect x="22" y="34" width="12" height="76" rx="4" fill="#7fb2d9"/><path d="M48 50 h70 M48 72 h52 M48 94 h62" stroke="#e3e5ea" stroke-width="9" stroke-linecap="round"/>`,
 	),
+	"actions/shortcut-key.svg": svg(
+		144,
+		`<rect width="144" height="144" fill="${IDLE}"/><path d="M58 40 h-14 a10 10 0 0 0 -10 10 v44 a10 10 0 0 0 10 10 h44 a10 10 0 0 0 10 -10 v-14" stroke="#e3e5ea" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M76 36 h32 v32 M106 38 l-40 40" stroke="#e3e5ea" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+	),
 	"actions/needs.svg": svg(20, q(10, 17, 18, "#ffffff")),
 	"actions/finished.svg": svg(20, check(10, 10, 16, "#ffffff")),
 	"actions/combined.svg": svg(20, `<polygon points="1,1 19,1 1,19" fill="none" stroke="#ffffff" stroke-width="1.6"/>${check(13, 13, 8, "#ffffff")}`),
 	"actions/mute.svg": svg(20, `<g transform="scale(0.139)">${speaker("#ffffff")}</g>`),
 	"actions/browser.svg": svg(20, `<circle cx="10" cy="10" r="7.5" fill="none" stroke="#ffffff" stroke-width="1.8"/><path d="M10 3 v4" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>`),
 	"actions/status.svg": svg(20, `<path d="M3 4 v12" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/><path d="M7 6 h10 M7 10 h7 M7 14 h9" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>`),
+	"actions/shortcut.svg": svg(20, `<path d="M8 4 h-3 a1.5 1.5 0 0 0 -1.5 1.5 v9.5 a1.5 1.5 0 0 0 1.5 1.5 h9.5 a1.5 1.5 0 0 0 1.5 -1.5 v-3" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M11 3.5 h5.5 v5.5 M16 4 l-7 7" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`),
 	"plugin/category.svg": svg(28, `${q(10, 22, 22, "#ffffff")}${check(20, 16, 11, "#ffffff")}`),
 	// The plugin icon is a PNG (Stream Deck requires it): scripts/make-plugin-icon.ps1.
 };

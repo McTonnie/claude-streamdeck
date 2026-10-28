@@ -14,6 +14,24 @@ const KIND_LABEL: Record<string, string> = {
 	ask: "question",
 };
 
+/** Each status's colour, as the status dial and shortcut keys use it. */
+export const STATUS_COLOR: Record<BusyItem["status"], string> = {
+	idle: COLORS.muted,
+	working: COLORS.working,
+	needs: COLORS.needs,
+	finished: COLORS.finished,
+};
+
+/** "Working", "Asking you", "Finished", "Idle"… */
+export const statusLabel = (item: BusyItem): string =>
+	item.status === "needs"
+		? (NEEDS_LABEL[item.needsKind ?? "permission"] ?? "Needs you")
+		: item.status === "finished"
+			? "Finished"
+			: item.status === "working"
+				? "Working"
+				: "Idle";
+
 /** How the status dial names each kind of waiting. */
 const NEEDS_LABEL: Record<string, string> = {
 	permission: "Needs approval",
@@ -48,15 +66,14 @@ export function dialImage(item: Item | null, index: number, total: number, brigh
 	return svgUrl(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100">${parts.join("")}</svg>`);
 }
 
-/** The status dial: one busy session's title, folder, state and time in it; only needs answer blinks. */
-export function statusImage(item: BusyItem | null, index: number, total: number, bright: boolean): string {
+/** The status dial: one session's title, folder, state and time in it; only needs answer blinks. */
+export function statusImage(item: BusyItem | null, index: number, total: number, bright: boolean, empty = "No busy sessions"): string {
 	const parts = [`<rect width="200" height="100" fill="${COLORS.bg}"/>`];
 	if (!item) {
-		parts.push(`<text x="100" y="58" text-anchor="middle" font-family="${FONT}" font-size="20" fill="${COLORS.idleInk}">No busy sessions</text>`);
+		parts.push(`<text x="100" y="58" text-anchor="middle" font-family="${FONT}" font-size="20" fill="${COLORS.idleInk}">${esc(empty)}</text>`);
 	} else {
-		const color = item.status === "needs" ? COLORS.needs : item.status === "finished" ? COLORS.finished : COLORS.working;
-		const state =
-			item.status === "needs" ? (NEEDS_LABEL[item.needsKind ?? "permission"] ?? "Needs you") : item.status === "finished" ? "Finished" : "Working";
+		const color = STATUS_COLOR[item.status];
+		const state = statusLabel(item);
 		const lit = item.status !== "needs" || bright;
 		parts.push(`<rect width="200" height="100" fill="${color}" opacity="${lit ? 0.16 : 0.05}"/>`);
 		parts.push(`<rect width="8" height="100" fill="${color}" opacity="${lit ? 1 : 0.45}"/>`);
