@@ -1,0 +1,119 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+	"Name": "Claude Notify",
+	"Version": "0.1.0.0",
+	"Author": "McTonnie",
+	"Description": "Flashes, counts and chimes when a Claude Code session in the Claude Desktop app needs your answer or has finished. One press opens that session.",
+	"UUID": "com.mctonnie.claude-notify",
+	"Category": "Claude Notify",
+	"CategoryIcon": "imgs/plugin/category",
+	"Icon": "imgs/plugin/icon",
+	"CodePath": "bin/plugin.js",
+	"SDKVersion": 3,
+	"Software": {
+		"MinimumVersion": "7.1"
+	},
+	"OS": [
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		}
+	],
+	"Nodejs": {
+		"Version": "24",
+		"Debug": "disabled"
+	},
+	"Actions": [
+		{
+			"Name": "Needs answer",
+			"UUID": "com.mctonnie.claude-notify.needs",
+			"Icon": "imgs/actions/needs",
+			"Tooltip": "Flashes when a Claude session waits for your answer or approval. Press: open the next one. Hold: dismiss all.",
+			"PropertyInspectorPath": "ui/key.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"SupportedInMultiActions": false,
+			"States": [
+				{
+					"Image": "imgs/actions/needs-key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"Name": "Finished",
+			"UUID": "com.mctonnie.claude-notify.finished",
+			"Icon": "imgs/actions/finished",
+			"Tooltip": "Flashes when a Claude session has finished its task. Press: open the oldest. Hold: dismiss all.",
+			"PropertyInspectorPath": "ui/key.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"SupportedInMultiActions": false,
+			"States": [
+				{
+					"Image": "imgs/actions/finished-key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"Name": "Combined",
+			"UUID": "com.mctonnie.claude-notify.combined",
+			"Icon": "imgs/actions/combined",
+			"Tooltip": "Both in one key: amber half = needs answer, green half = finished. Press: needs first, then finished. Hold: dismiss all.",
+			"PropertyInspectorPath": "ui/combined.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"SupportedInMultiActions": false,
+			"States": [
+				{
+					"Image": "imgs/actions/combined-key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"Name": "Mute",
+			"UUID": "com.mctonnie.claude-notify.mute",
+			"Icon": "imgs/actions/mute",
+			"Tooltip": "Turns all Claude Notify sounds off or on. Set quiet hours in its settings.",
+			"PropertyInspectorPath": "ui/mute.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/mute-key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"Name": "Session browser",
+			"UUID": "com.mctonnie.claude-notify.browser",
+			"Icon": "imgs/actions/browser",
+			"Tooltip": "Stream Deck +: turn to browse waiting Claude sessions, press or tap to open, hold a touch to dismiss.",
+			"PropertyInspectorPath": "ui/dial.html",
+			"Controllers": [
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "layouts/canvas.json",
+				"TriggerDescription": {
+					"Rotate": "Browse waiting sessions",
+					"Push": "Open session",
+					"Touch": "Open session",
+					"LongTouch": "Dismiss session"
+				}
+			},
+			"States": [
+				{
+					"Image": "imgs/actions/browser-key"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "mctonnie-mods",
+  "version": "0.1.0",
+  "description": "McTonnie's Claude Code mods in one pack, with a McT Mods settings button. Includes Stream Deck: reports each Claude Desktop session's state (needs your answer / finished) to the Claude Notify Stream Deck plugin.",
+  "author": { "name": "McTonnie", "url": "https://github.com/McTonnie" },
+  "homepage": "https://github.com/McTonnie/claude-streamdeck",
+  "repository": "https://github.com/McTonnie/claude-streamdeck",
+  "license": "MIT",
+  "keywords": ["stream deck", "notifications", "claude desktop", "mods"],
+  "types": "./types/index.d.ts"
+}

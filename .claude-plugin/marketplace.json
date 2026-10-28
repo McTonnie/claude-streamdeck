@@ -1,0 +1,15 @@
+{
+  "name": "mctonnie",
+  "owner": {
+    "name": "McTonnie",
+    "url": "https://github.com/McTonnie"
+  },
+  "description": "McTonnie's Claude Code mods: Stream Deck notifications for Claude Desktop sessions, and more to come.",
+  "plugins": [
+    {
+      "name": "mctonnie-mods",
+      "source": "./mod",
+      "description": "McTonnie's Claude Code mods pack. Includes Stream Deck notifications for Claude Desktop sessions (pairs with the Claude Notify Stream Deck plugin)."
+    }
+  ]
+}

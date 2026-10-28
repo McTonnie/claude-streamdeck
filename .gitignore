@@ -1,0 +1,19 @@
+# Node.js
+node_modules/
+
+# Stream Deck build output and logs
+streamdeck/*.sdPlugin/bin/
+streamdeck/*.sdPlugin/logs/
+streamdeck/dist/
+streamdeck/*.sdPlugin/imgs/plugin/icon.svg
+
+# Engine-written types beside the mod
+mod/.claude-plugin/types/
+
+# Local working notes (personal paths and test history)
+docs/notes.md
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+*.log

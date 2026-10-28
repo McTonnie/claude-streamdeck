@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Claude Notify mute</title>
+		<script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
+	</head>
+	<body>
+		<sdpi-item label="Quiet hours">
+			<sdpi-checkbox setting="quietOn" default="false" label="No sounds during these hours"></sdpi-checkbox>
+		</sdpi-item>
+		<sdpi-item label="From">
+			<sdpi-textfield setting="quietFrom" default="23:00" pattern="^([01]?\d|2[0-3]):[0-5]\d$" placeholder="23:00"></sdpi-textfield>
+		</sdpi-item>
+		<sdpi-item label="To">
+			<sdpi-textfield setting="quietTo" default="08:00" pattern="^([01]?\d|2[0-3]):[0-5]\d$" placeholder="08:00"></sdpi-textfield>
+		</sdpi-item>
+		<p style="color:#9aa0ab;font-size:11px;margin:8px 12px">Press the key to mute or unmute all sounds. Keys keep flashing while muted.</p>
+	</body>
+</html>

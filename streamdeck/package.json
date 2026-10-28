@@ -1,0 +1,36 @@
+{
+  "name": "claude-notify-streamdeck",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Claude Notify: a Stream Deck plugin for Claude Desktop sessions that need your answer or have finished.",
+  "author": "McTonnie",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/McTonnie/claude-streamdeck.git",
+    "directory": "streamdeck"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.mctonnie.claude-notify\"",
+    "sounds": "node scripts/make-sounds.mjs",
+    "typecheck": "tsc --noEmit",
+    "pack": "npm run build && streamdeck pack com.mctonnie.claude-notify.sdPlugin --output dist --force",
+    "icons": "node scripts/make-icons.mjs && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/make-plugin-icon.ps1"
+  },
+  "dependencies": {
+    "@elgato/streamdeck": "3.0.2",
+    "@elgato/utils": "0.6.1"
+  },
+  "devDependencies": {
+    "@elgato/cli": "1.10.2",
+    "@rollup/plugin-commonjs": "29.0.3",
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "@rollup/plugin-typescript": "12.3.0",
+    "@types/node": "24.19.2",
+    "rollup": "4.60.0",
+    "tslib": "2.8.1",
+    "typescript": "5.9.3"
+  }
+}
