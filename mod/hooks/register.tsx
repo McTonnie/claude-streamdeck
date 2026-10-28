@@ -53,7 +53,7 @@ export const register: Register = on => {
 
   on('turn.complete', async ($, e, next) => {
     const r = await next(e)
-    await featuresTurnDone($)
+    if (e.agentId === undefined) await featuresTurnDone($, e.reason)
     return r
   })
 

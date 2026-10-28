@@ -5,7 +5,8 @@ export type SessionState = {
 	cliId: string;
 	pid: number | null;
 	cwd: string;
-	state: "working" | "needs" | "finished";
+	/** idle: open with no turn running (never shown); working: a turn or its background work runs. */
+	state: "idle" | "working" | "needs" | "finished";
 	kind: NeedsKind | null;
 	since: number;
 	ended: boolean;
@@ -24,6 +25,17 @@ export type Item = {
 	needsKind: NeedsKind | null;
 	since: number;
 	title: string;
+};
+
+/** One busy session, as the status dial shows it: working, needs answer, or finished and not seen. */
+export type BusyItem = {
+	id: string;
+	status: "working" | Kind;
+	needsKind: NeedsKind | null;
+	since: number;
+	title: string;
+	/** The project folder's name. */
+	folder: string;
 };
 
 /** Settings of the Needs answer and Finished keys. */

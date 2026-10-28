@@ -23,7 +23,7 @@ streamdeck/                       Stream Deck plugin "Claude Notify"
   src/render/key.ts, dial.ts      SVG key faces and the touch-strip canvas
   src/sound/player.ts             one hidden PowerShell with WPF MediaPlayer plays the chimes
   src/open.ts                     opens claude://code/continue?session=… via rundll32
-  src/actions/                    needs / finished / combined keys, mute, session-browser dial
+  src/actions/                    needs / finished / combined keys, mute, session-browser and session-status dials
   scripts/                        make-sounds.mjs, make-icons.mjs, make-plugin-icon.ps1
   com.mctonnie.claude-notify.sdPlugin/   manifest, images, sounds, settings pages, dial layout
 ```
@@ -67,7 +67,7 @@ Only Desktop sessions write a file (`CLAUDE_CODE_ENTRYPOINT=claude-desktop`, id 
 
 ### What the plugin drops
 
-`working` sessions; `needs` whose process is gone or that has `ended`; sessions archived in the Desktop app or missing from its session list. A `finished` session stays until it's opened from the deck, dismissed, replied to or archived.
+From the waiting keys: `working` sessions. From everything (keys and the status dial's busy list): `working` or `needs` whose process is gone or that has `ended`; sessions archived in the Desktop app or missing from its session list. A `finished` session stays until it's opened from the deck, dismissed, replied to or archived.
 
 ## Build and run
 
@@ -136,7 +136,7 @@ Then read `~/.claude/streamdeck/sessions/local_test-1.json` and delete it afterw
 3. Let a turn finish: Finished + Combined (green) blink with a ding; press → it opens and goes out.
 4. Two waiting sessions: presses alternate between them; Combined opens needs first.
 5. Hold a lit key about 1 s: everything on it is dismissed.
-6. Dial: turn, press or tap, long touch.
+6. Session browser dial: turn, press or tap, long touch. Session status dial: a working, an asking and a finished session all show with the right colour and time; turn switches, press opens.
 7. Mute (no sound, keys still blink); quiet hours around the current time shows `QUIET`.
 8. Key settings: change sound or volume (a preview plays), your own file, a 2-minute reminder.
 9. Archive a finished session: it drops off within about 30 s.

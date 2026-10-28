@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
 	"Name": "Claude Notify",
-	"Version": "0.1.0.0",
+	"Version": "0.2.0.0",
 	"Author": "McTonnie",
 	"Description": "Flashes, counts and chimes when a Claude Code session in the Claude Desktop app needs your answer or has finished. One press opens that session.",
 	"UUID": "com.mctonnie.claude-notify",
@@ -112,6 +112,28 @@
 			"States": [
 				{
 					"Image": "imgs/actions/browser-key"
+				}
+			]
+		},
+		{
+			"Name": "Session status",
+			"UUID": "com.mctonnie.claude-notify.status",
+			"Icon": "imgs/actions/status",
+			"Tooltip": "Stream Deck +: shows every busy Claude session (working, needs answer, finished) with its state and time. Turn to switch, press or tap to open.",
+			"Controllers": [
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "layouts/canvas.json",
+				"TriggerDescription": {
+					"Rotate": "Switch session",
+					"Push": "Open session",
+					"Touch": "Open session"
+				}
+			},
+			"States": [
+				{
+					"Image": "imgs/actions/status-key"
 				}
 			]
 		}

@@ -6,13 +6,13 @@ import { type Chime, play, soundFile, warmUp } from "./sound/player";
 import { desktopInfo } from "./store/desktop";
 import { loadMemory, memory, saveMemory, silenced } from "./store/memory";
 import { readStates, watchStates } from "./store/states";
-import type { ComboSettings, Item, Kind, KeySettings, SessionState } from "./types";
+import type { BusyItem, ComboSettings, Item, Kind, KeySettings, SessionState } from "./types";
 
 // The plugin's one source of truth: the waiting sessions in two queues, which
 // keys are on screen with which settings, the blink phase, presses, and the
 // sounds. Actions draw from it and tell it what was pressed.
 
-export type ActionType = "needs" | "finished" | "combined" | "mute" | "browser";
+export type ActionType = "needs" | "finished" | "combined" | "mute" | "browser" | "status";
 type Visible = { type: ActionType; settings: Record<string, unknown> };
 
 const BLINK_MS = 500;
@@ -28,21 +28,30 @@ function alive(pid: number | null): boolean {
 	}
 }
 
-/** The waiting item a state file stands for, or null when nothing waits or it should be dropped. */
-function toItem(s: SessionState): Item | null {
-	if (s.state === "working") return null;
-	if (memory.seen[s.id] === s.since) return null;
-	// Nothing can still be asking once its process is gone; a finished task stays until seen.
-	if (s.state === "needs" && (s.ended || !alive(s.pid))) return null;
+/**
+ * The busy session a state file stands for, or null when it should be dropped:
+ * idle, seen, archived or gone from the Desktop app, or (working and needs alike)
+ * its process ended. A finished task stays until seen, its process or not.
+ */
+function toBusy(s: SessionState): BusyItem | null {
+	if (s.state === "idle" || memory.seen[s.id] === s.since) return null;
+	if (s.state !== "finished" && (s.ended || !alive(s.pid))) return null;
 	const info = desktopInfo(s.id);
 	if (info === "missing" || (info !== "unknown" && info.archived)) return null;
-	const title = (info !== "unknown" && info.title) || path.basename(s.cwd) || "Claude";
-	return { id: s.id, kind: s.state, needsKind: s.kind, since: s.since, title };
+	const folder = path.basename(s.cwd);
+	const title = (info !== "unknown" && info.title) || folder || "Claude";
+	return { id: s.id, status: s.state, needsKind: s.kind, since: s.since, title, folder };
 }
+
+/** The waiting item (needs answer or finished) a busy session stands for. */
+const toItem = (b: BusyItem): Item | null =>
+	b.status === "working" ? null : { id: b.id, kind: b.status, needsKind: b.needsKind, since: b.since, title: b.title };
 
 class Hub {
 	needs: Item[] = [];
 	finished: Item[] = [];
+	/** Every busy session (working, needs answer, finished and not seen), most recent change first. */
+	busy: BusyItem[] = [];
 	/** Bright or dim half of the blink. */
 	bright = true;
 
@@ -84,7 +93,11 @@ class Hub {
 	/** Reads the state files again, chimes for new waiting states, redraws. */
 	refresh(): void {
 		const states = readStates();
-		const items = states.map(toItem).filter((i): i is Item => i !== null);
+		this.busy = states
+			.map(toBusy)
+			.filter((b): b is BusyItem => b !== null)
+			.sort((a, b) => b.since - a.since);
+		const items = this.busy.map(toItem).filter((i): i is Item => i !== null);
 		const bySince = (a: Item, b: Item) => a.since - b.since;
 		this.needs = items.filter((i) => i.kind === "needs").sort(bySince);
 		this.finished = items.filter((i) => i.kind === "finished").sort(bySince);
@@ -150,8 +163,14 @@ class Hub {
 		if (item?.kind === "finished") this.markSeen([item]);
 	}
 
+	/** Opens a busy session (the status dial's selection); a finished one counts as seen. */
+	openBusy(item: BusyItem | null): void {
+		openSession(item?.id ?? null);
+		if (item?.status === "finished") this.markSeen([item]);
+	}
+
 	/** Hides these items until their session changes state again. */
-	markSeen(items: Item[]): void {
+	markSeen(items: { id: string; since: number }[]): void {
 		if (items.length === 0) return;
 		for (const i of items) memory.seen[i.id] = i.since;
 		saveMemory();

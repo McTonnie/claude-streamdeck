@@ -10,6 +10,7 @@ export const COLORS = {
 	needsInk: "#1d1408",
 	finished: "#74c48a",
 	finishedInk: "#0f1f14",
+	working: "#7fb2d9",
 	idle: "#2b2f39",
 	idleInk: "#5b6170",
 	text: "#e3e5ea",

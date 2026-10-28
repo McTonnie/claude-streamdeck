@@ -9,7 +9,8 @@ export type SdState = {
   cliId: string
   pid: number | null
   cwd: string
-  state: 'working' | 'needs' | 'finished'
+  /** idle: open with no turn running; working: a turn or its background work runs. */
+  state: 'idle' | 'working' | 'needs' | 'finished'
   kind: 'permission' | 'question' | 'plan' | 'form' | 'ask' | null
   /** When this state (and kind) began, ms. */
   since: number

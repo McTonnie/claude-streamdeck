@@ -18,6 +18,7 @@ It comes in two parts that work together:
 - **Combined** key: both in one, split diagonally. The amber half is for needs answer, the green half for finished.
 - **Mute** key: silences all sounds (keys keep blinking). Optional quiet hours.
 - **Session browser** dial (Stream Deck +): turn through every waiting session on the touch strip, showing title, kind and age.
+- **Session status** dial (Stream Deck +): see what every busy session is doing (blue *Working*, amber *Needs approval* / *Asking you*, green *Finished*), with its project folder and how long it's been in that state. The most recent change comes first; turn to switch.
 
 Every waiting key shows a **count badge** and the **title of the session** the next press opens. Each kind plays its own **chime** once when something new arrives, with optional reminders.
 
@@ -27,11 +28,16 @@ Every waiting key shows a **count badge** and the **title of the session** the n
 | Press with nothing waiting | Opens your most recent Claude session. |
 | Hold about 1 second | Dismisses everything on that key without opening anything. |
 
-| On the dial | What happens |
+| On the Session browser dial | What happens |
 | --- | --- |
 | Turn | Step through waiting sessions (needs answer first). |
 | Press or tap | Open the one shown. |
 | Long touch | Dismiss the one shown. |
+
+| On the Session status dial | What happens |
+| --- | --- |
+| Turn | Switch between busy sessions (working, needs answer, finished and not yet seen). |
+| Press or tap | Open the one shown. A finished one then counts as seen. |
 
 ## Requirements
 
@@ -89,7 +95,7 @@ claude plugin install mctonnie-mods@mctonnie
 
 **3. Start a new Claude Desktop session.** The mod loads when a session starts; sessions that were already open stay untracked until restarted.
 
-**4. Set up your deck.** In the Stream Deck app, find the **Claude Notify** category and drag *Needs answer*, *Finished*, *Combined*, *Mute* and *Session browser* (dial) where you want them.
+**4. Set up your deck.** In the Stream Deck app, find the **Claude Notify** category and drag *Needs answer*, *Finished*, *Combined*, *Mute*, *Session browser* and *Session status* (dials) where you want them.
 
 To test, ask the new session something that needs your approval: the Needs answer key should blink and chime.
 

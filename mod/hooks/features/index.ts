@@ -10,6 +10,7 @@ import {
   streamdeckPermission,
   streamdeckStart,
   streamdeckStop,
+  streamdeckTurnDone,
   streamdeckTurnStart,
 } from './streamdeck'
 import type { BgTask } from './streamdeck'
@@ -43,7 +44,10 @@ export async function featuresTurnStart($: EngineInterface): Promise<void> {
   await streamdeckTurnStart($)
 }
 
-export async function featuresTurnDone(_$: EngineInterface): Promise<void> {}
+/** The main loop's turn ended; `reason` is how (answer, aborted, refusal, error). */
+export async function featuresTurnDone($: EngineInterface, reason: string): Promise<void> {
+  await streamdeckTurnDone($, reason)
+}
 
 /** A permission prompt (or a question asked through one) waits on the user. */
 export async function featuresPermission($: EngineInterface, toolName: string): Promise<void> {

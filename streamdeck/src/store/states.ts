@@ -12,7 +12,7 @@ export const STATE_DIR = path.join(os.homedir(), ".claude", "streamdeck", "sessi
 const RESCAN_MS = 5_000;
 const DEBOUNCE_MS = 120;
 
-const STATES = new Set(["working", "needs", "finished"]);
+const STATES = new Set(["idle", "working", "needs", "finished"]);
 const KINDS = new Set([null, "permission", "question", "plan", "form", "ask"]);
 
 function parse(text: string): SessionState | null {

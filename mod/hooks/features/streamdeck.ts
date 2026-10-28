@@ -92,7 +92,7 @@ async function ownPid($: EngineInterface): Promise<number | null> {
   }
 }
 
-/** A new or resumed session: keep what the file says (a finished task stays finished), else working. */
+/** A new or resumed session: keep what the file says (a finished task stays finished), else idle. */
 export async function streamdeckStart($: EngineInterface): Promise<void> {
   const file = await fileOf($)
   if (!file) return
@@ -110,7 +110,7 @@ export async function streamdeckStart($: EngineInterface): Promise<void> {
     await update($, sd, () => ({ ...kept, ended: true }))
     await setState($, 'finished', null, false)
   } else {
-    await setState($, 'working')
+    await setState($, 'idle')
   }
 }
 
@@ -154,6 +154,12 @@ export async function streamdeckStop($: EngineInterface, tasks: BgTask[]): Promi
   if (work.length > 0) return setState($, 'working', null, false, work.map(t => `${t.type} ${t.status}: ${t.description.slice(0, 80)}`))
   if (await read($, asked)) return setState($, 'needs', 'ask')
   await setState($, 'finished')
+}
+
+/** A turn that was interrupted, refused or died on an error: no Stop follows, and nothing runs any more. */
+export async function streamdeckTurnDone($: EngineInterface, reason: string): Promise<void> {
+  if (reason === 'answer') return
+  if ((await read($, sd))?.state === 'working') await setState($, 'idle')
 }
 
 export async function streamdeckEnd($: EngineInterface): Promise<void> {
